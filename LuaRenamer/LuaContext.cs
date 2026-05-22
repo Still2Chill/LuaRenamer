@@ -25,6 +25,8 @@ namespace LuaRenamer;
 
 public class LuaContext : Lua
 {
+    public static IAniDbEpisodeCodeProvider AniDbEpisodeCodeProvider { get; set; } = new AniDbEpisodeCodeProvider();
+
     private readonly ILogger _logger;
     private readonly RelocationContext<LuaRenamerSettings> _args;
     private static readonly Stopwatch FileCacheStopwatch = new();
@@ -328,6 +330,7 @@ public class LuaContext : Lua
         if (GetCachedOrNewTable((typeof(IAnidbEpisode), episode.ID), out var epTable))
             return epTable;
         epTable[nameof(EpisodeTable.duration)] = episode.Runtime.TotalSeconds;
+        epTable[nameof(EpisodeTable.code)] = AniDbEpisodeCodeProvider.GetEpisodeCode(episode, _args.Configuration, _args.CancellationToken);
         epTable[nameof(EpisodeTable.number)] = episode.EpisodeNumber;
         epTable[nameof(EpisodeTable.type)] = episode.Type.ToString();
         epTable[nameof(EpisodeTable.airdate)] = DateTimeToTable(episode.AirDateWithTime);

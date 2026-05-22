@@ -32,6 +32,11 @@ public class LuaTests
 {
     private static readonly ILogger<LuaRenamer.LuaRenamer> Logmock = Mock.Of<ILogger<LuaRenamer.LuaRenamer>>();
 
+    private sealed class StubAniDbEpisodeCodeProvider(string? code) : IAniDbEpisodeCodeProvider
+    {
+        public string? GetEpisodeCode(IAnidbEpisode episode, LuaRenamerSettings settings, CancellationToken cancellationToken) => code;
+    }
+
     private static RelocationContext<LuaRenamerSettings> MinimalArgs(string script)
     {
         var importFolder = Mock.Of<IManagedFolder>(i => i.Path == Path.Combine("C:", "testimportfolder") &&
@@ -199,6 +204,26 @@ public class LuaTests
         var renamer = new LuaRenamer.LuaRenamer(Logmock);
         var res = renamer.GetPath(args);
         Assert.AreEqual("episodeTitle1 5 Episode.mp4", res.FileName);
+    }
+
+    [TestMethod]
+    public void TestEpisodeCode()
+    {
+        var originalProvider = LuaContext.AniDbEpisodeCodeProvider;
+        LuaContext.AniDbEpisodeCodeProvider = new StubAniDbEpisodeCodeProvider("ED1g");
+
+        try
+        {
+            var args = MinimalArgs($"{EnvTable.filename} = {EnvTable.episode.code}");
+            var renamer = new LuaRenamer.LuaRenamer(Logmock);
+            var res = renamer.GetPath(args);
+
+            Assert.AreEqual("ED1g.mp4", res.FileName);
+        }
+        finally
+        {
+            LuaContext.AniDbEpisodeCodeProvider = originalProvider;
+        }
     }
 
     [TestMethod]

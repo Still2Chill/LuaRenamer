@@ -11,6 +11,9 @@ public class EpisodeTable : Table
     [LuaType(LuaTypeNames.integer, "Duration of the episode in seconds")]
     public string duration => Get();
 
+    [LuaType($"{LuaTypeNames.@string}|{LuaTypeNames.nil}", "Raw AniDB episode code from the AniDB HTTP API `<epno>` text, e.g., '01', 'S01', 'C14', 'OP1', or 'ED1g'")]
+    public string code => Get();
+
     [LuaType(LuaTypeNames.integer, "Episode number")]
     public string number => Get();
 

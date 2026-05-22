@@ -62,6 +62,7 @@ local DateTime = {}
 
 ---@class (exact) Episode
 ---@field duration integer # Duration of the episode in seconds
+---@field code string|nil # Raw AniDB episode code from the AniDB HTTP API `<epno>` text, e.g., '01', 'S01', 'C14', 'OP1', or 'ED1g'
 ---@field number integer # Episode number
 ---@field type EpisodeType # Type of the episode
 ---@field airdate DateTime|nil # Air date of the episode

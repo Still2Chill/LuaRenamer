@@ -80,6 +80,22 @@ In addition to the `filename`, `destination` and `subfolder` output variables, t
 - `skip_move` If true, the result of running the script is discarded when moving. (default: false)
 - `illegal_chars_map` Mapping of illegal characters to their replacements
 
+## AniDB Episode Code Lookup
+
+LuaRenamer can optionally fetch raw AniDB episode codes from the AniDB HTTP API and expose them as `episode.code`.
+
+This is disabled by default. To enable it, configure:
+
+- `Enable AniDB Episode Code Lookup`
+- `AniDB HTTP Client Name`
+- `AniDB HTTP Client Version`
+
+The client name and version must be registered with AniDB for HTTP API use. They are not your AniDB username or password.
+
+When enabled, `episode.code` is the exact text from AniDB's `<epno>` element. Examples include `01`, `S01`, `C14`, `OP1`, and `ED1g`. The `<epno type="...">` attribute describes the AniDB episode category; it is not a version and is not used as the code.
+
+AniDB requires heavy local caching and asks clients not to request more than one page every two seconds. LuaRenamer caches anime episode-code responses and rate-limits HTTP requests accordingly. If lookup is disabled, unconfigured, rate-limited, unavailable, or AniDB does not return a matching episode, `episode.code` is `nil`.
+
 ## Notes for File Moving
 
 ### Destination

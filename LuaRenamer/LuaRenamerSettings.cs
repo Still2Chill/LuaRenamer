@@ -41,6 +41,25 @@ public class LuaRenamerSettings : IRelocationProviderConfiguration, IConfigurati
         Description = "Check if you only want to replace/remove directory separators on linux.")]
     public bool PlatformDependentIllegalCharacters { get; set; }
 
+    [Display(Name = "Enable AniDB Episode Code Lookup",
+        Description = "Fetch the raw AniDB episode code from the AniDB HTTP API and expose it as `episode.code`. " +
+                      "The code is the exact `<epno>` text, e.g. `01`, `S01`, `C14`, `OP1`, or `ED1g`.")]
+    public bool EnableAniDbEpisodeCodeLookup { get; set; }
+
+    [Display(Name = "AniDB HTTP Client Name",
+        Description = "Registered AniDB HTTP API client identifier. This is not your AniDB username.")]
+    public string AniDbHttpClientName { get; set; } = string.Empty;
+
+    [Range(1, int.MaxValue)]
+    [Display(Name = "AniDB HTTP Client Version",
+        Description = "Registered version number for the AniDB HTTP API client identifier.")]
+    public int AniDbHttpClientVersion { get; set; } = 1;
+
+    [Range(1, 720)]
+    [Display(Name = "AniDB Episode Code Cache Hours",
+        Description = "How long to cache AniDB anime episode-code responses. AniDB requires heavy local caching.")]
+    public int AniDbEpisodeCodeCacheHours { get; set; } = 24;
+
     [CodeEditor(CodeEditorLanguage.Lua)]
     [Visibility(Size = DisplayElementSize.Full)]
     public string Script { get; set; } = string.Empty;
