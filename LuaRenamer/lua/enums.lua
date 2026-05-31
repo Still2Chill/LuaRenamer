@@ -190,3 +190,11 @@ RelationType = {
     SideStory = "SideStory",
     Summary = "Summary",
 }
+
+---@enum SeasonName
+SeasonName = {
+    Winter = "Winter",
+    Spring = "Spring",
+    Summer = "Summer",
+    Fall = "Fall",
+}

@@ -31,4 +31,5 @@ public static class LuaTypeNames
     public const string TmdbShow = nameof(TmdbShow);
     public const string Tmdb = nameof(Tmdb);
     public const string Video = nameof(Video);
+    public const string Season = nameof(Season);
 }

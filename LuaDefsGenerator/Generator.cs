@@ -164,7 +164,8 @@ public class Generator
             }
             else
             {
-                CreateMappings(Enum.GetNames(enumType));
+                // Use over GetNames to prevent creating new enum values that had same value before
+                CreateMappings(Enum.GetValues(enumType).Cast<object>().Distinct().Select(v => Enum.GetName(enumType, v)!));
             }
 
             sb.Append("}\n\n");

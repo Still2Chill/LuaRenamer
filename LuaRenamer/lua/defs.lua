@@ -31,6 +31,7 @@ local AniDbMedia = {}
 ---@field studios string[] # List of studios that produced the anime
 ---@field tags string[] # List of anime series tags
 ---@field customtags string[] # List of custom Shoko tags
+---@field seasons Season[] # List of seasons anime aired during
 local Anime = {}
 
 ---Get the anime title in the specified language
@@ -127,6 +128,11 @@ local Relation = {}
 ---@field shortname string # Abbreviated name or acronym of the release group
 local ReleaseGroup = {}
 
+---@class (exact) Season
+---@field year integer # Season year
+---@field season SeasonName # Season aired
+local Season = {}
+
 ---@class (exact) Title
 ---@field name string # The title text
 ---@field language Language # Language of the title
@@ -184,6 +190,7 @@ function TmdbMovie:getname(lang) end
 ---@field episodecount integer # Total number of episodes
 ---@field airdate DateTime|nil # Air date of the show
 ---@field enddate DateTime|nil # End date of the show
+---@field seasons Season[] # List of seasons anime aired during
 local TmdbShow = {}
 
 ---Get the show title in the specified language

@@ -226,14 +226,19 @@ public class LuaContext : Lua
         env[nameof(EnumsTable.EpisodeType)] = EnumToTable<EpisodeType>();
         env[nameof(EnumsTable.ImportFolderType)] = EnumToTable<DropFolderType>();
         env[nameof(EnumsTable.RelationType)] = EnumToTable<RelationType>();
+        env[nameof(EnumsTable.SeasonName)] = EnumToTable<YearlySeason>();
         return env;
     }
 
     private LuaTable EnumToTable<T>() where T : struct, Enum
     {
         var enumTable = GetNewTable();
-        foreach (var name in Enum.GetNames<T>())
+        // Use over GetNames to prevent creating new enum values that had same value before
+        foreach (var v in Enum.GetValues<T>().Distinct())
+        {
+            var name = Enum.GetName(v);
             enumTable[name] = name;
+        }
         return enumTable;
     }
 
@@ -283,7 +288,16 @@ public class LuaContext : Lua
                 .Select(r => RelationToTable(r, getName)));
         animeTable[nameof(AnimeTable.tags)] = GetNewArray(anime.Tags.Select(t => t.Name));
         animeTable[nameof(AnimeTable.customtags)] = GetNewArray(series?.Tags.Select(t => t.Name) ?? []);
+        animeTable[nameof(AnimeTable.seasons)] = GetNewArray(anime.YearlySeasons.Select(SeasonToTable));
         return animeTable;
+    }
+
+    private LuaTable SeasonToTable((int Year, YearlySeason Season) season)
+    {
+        var seasonTable = GetNewTable();
+        seasonTable[nameof(SeasonTable.year)] = season.Year;
+        seasonTable[nameof(SeasonTable.season)] = Enum.GetName(season.Season);
+        return seasonTable;
     }
 
     private LuaTable RelationToTable(IRelatedMetadata<ISeries, ISeries> relation, LuaFunction getName)
@@ -468,6 +482,7 @@ public class LuaContext : Lua
             showTable[nameof(TmdbShowTable.airdate)] = DateTimeToTable(s.AirDate?.ToDateTime());
             showTable[nameof(TmdbShowTable.enddate)] = DateTimeToTable(s.EndDate?.ToDateTime());
             showTable[nameof(TmdbShowTable.getname)] = getName;
+            showTable[nameof(TmdbShowTable.seasons)] = GetNewArray(s.YearlySeasons.Select(SeasonToTable));
             return showTable;
         }));
         tmdbTable[nameof(TmdbTable.episodes)] = GetNewArray(_args.Episodes.Where(e => e.SeriesID == _primarySeries.ID)

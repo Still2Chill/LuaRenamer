@@ -42,4 +42,7 @@ public class TmdbShowTable : Table
     [LuaParameter(nameof(lang), nameof(EnumsTable.Language), "The language to get the title in")]
     [LuaReturnType($"{LuaTypeNames.@string}|{LuaTypeNames.nil}")]
     public string getname(string lang) => GetFunc([lang], ':');
+
+    [LuaType($"{LuaTypeNames.Season}[]", "List of seasons anime aired during")]
+    public string seasons => Get();
 }

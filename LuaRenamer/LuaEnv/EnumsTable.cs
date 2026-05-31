@@ -12,4 +12,5 @@ public class EnumsTable : RootTable
     public static EnumTable<TitleType> TitleType => new() { Fn = Get() };
     public static EnumTable<TitleLanguage> Language => new() { Fn = Get() };
     public static EnumTable<RelationType> RelationType => new() { Fn = Get() };
+    public static EnumTable<YearlySeason> SeasonName => new() { Fn = Get() };
 }
