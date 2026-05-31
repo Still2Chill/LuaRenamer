@@ -28,11 +28,11 @@
       },
       "Shoko.Abstractions": {
         "type": "Direct",
-        "requested": "[6.0.0-alpha.21, )",
-        "resolved": "6.0.0-alpha.21",
-        "contentHash": "+HV8cBADed6evd3y/0Fh/7PHQUU3FfltCbSz8SoEHtNpK8HW4/xrgJq5e+M+4vBIW0ntm52imlM+1XOet6uzDQ==",
+        "requested": "[6.0.0-alpha.33, )",
+        "resolved": "6.0.0-alpha.33",
+        "contentHash": "sU843296mDQW61G5y8Yb4NchzBzr+uhXU61ymKF/ArYm/7z533L/gPm5Kca+Emmbtmj1tCRIwS314z2cDi7mxA==",
         "dependencies": {
-          "NJsonSchema": "11.6.0"
+          "NJsonSchema": "11.6.1"
         }
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
@@ -52,18 +52,18 @@
       },
       "NJsonSchema": {
         "type": "Transitive",
-        "resolved": "11.6.0",
-        "contentHash": "7pTW5GK5lTwdnPrBuCNDm0xdIavmBRpiAmiqOQ4wkLYP153l7eANZL1ioKNOdA1TuMffhFqzk4jQk4yQt/5QMA==",
+        "resolved": "11.6.1",
+        "contentHash": "miqvNY4OSXCWVqaMqt0A8VUkij0UH1oPosHMLP+t6/nWNSSzWDPmm7G2DjVW7M9evy0x5DE2pS/DDTtKCpbzSQ==",
         "dependencies": {
-          "NJsonSchema.Annotations": "11.6.0",
+          "NJsonSchema.Annotations": "11.6.1",
           "Namotion.Reflection": "3.5.0",
           "Newtonsoft.Json": "13.0.3"
         }
       },
       "NJsonSchema.Annotations": {
         "type": "Transitive",
-        "resolved": "11.6.0",
-        "contentHash": "X4iFD2iAJbcrfF7r20TVWl7BPFyKIuhRvlNtKfKY+OdX/84J2ZPNa6SinFtWeCGPD8MNUVrzFjhuVu1SrVQrcg=="
+        "resolved": "11.6.1",
+        "contentHash": "WA4z8iK+0SOh2/qoo7rtEanj/LjJZ8oWWoXI8u1xcYMk6VzHONqpabJBYGrzqDO41ld+VQHOFL+B8MXncIVSSA=="
       }
     },
     "net10.0/linux-arm64": {
