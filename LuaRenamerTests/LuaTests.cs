@@ -55,6 +55,7 @@ public class LuaTests
         animeMock.SetupGet(a => a.ShokoSeries).Returns([shokoSeries]);
         animeMock.SetupGet(a => a.Studios).Returns([]);
         animeMock.SetupGet(a => a.Tags).Returns([]);
+        animeMock.SetupGet(a => a.YearlySeasons).Returns([]);
         return new RelocationContext<LuaRenamerSettings>(new RelocationContext
         {
             CancellationToken = CancellationToken.None,
@@ -112,6 +113,7 @@ public class LuaTests
         animeMock.SetupGet(a => a.ID).Returns(3);
         animeMock.SetupGet(a => a.Studios).Returns([]);
         animeMock.SetupGet(a => a.Tags).Returns([]);
+        animeMock.SetupGet(a => a.YearlySeasons).Returns([]);
         var shokoSeries = Mock.Of<IShokoSeries>(s =>
             s.AnidbAnime == animeMock.Object &&
             s.Title == "shokoseriesprefname" &&
@@ -472,6 +474,7 @@ public class LuaTests
         CompareEnums((LuaTable)defsEnv[EnumsTable.EpisodeType.Fn], (LuaTable)sandboxEnv[EnumsTable.EpisodeType.Fn]);
         CompareEnums((LuaTable)defsEnv[EnumsTable.ImportFolderType.Fn], (LuaTable)sandboxEnv[EnumsTable.ImportFolderType.Fn]);
         CompareEnums((LuaTable)defsEnv[EnumsTable.RelationType.Fn], (LuaTable)sandboxEnv[EnumsTable.RelationType.Fn]);
+        CompareEnums((LuaTable)defsEnv[EnumsTable.SeasonName.Fn], (LuaTable)sandboxEnv[EnumsTable.SeasonName.Fn]);
     }
 
     [TestMethod]
@@ -498,6 +501,7 @@ public class LuaTests
         ));
         animeMock.SetupGet(a => a.ShokoSeries).Returns([]);
         animeMock.SetupGet(a => a.Tags).Returns([]);
+        animeMock.SetupGet(a => a.YearlySeasons).Returns([]);
         var renamer = new LuaRenamer.LuaRenamer(Logmock);
         var res = renamer.GetPath(args);
         Assert.AreEqual("blah2AlternativeSetting0.mp4", res.FileName);
@@ -618,5 +622,79 @@ public class LuaTests
         var renamer = new LuaRenamer.LuaRenamer(Logmock);
         var res = renamer.GetPath(args);
         Assert.AreEqual("test_test.mp4", res.FileName);
+    }
+
+    [TestMethod]
+    public void TestSeasons()
+    {
+        var args = MinimalArgs("filename = anime.seasons[1].year .. anime.seasons[1].season");
+        var animeMock = new Mock<IAnidbAnime>();
+        animeMock.SetupGet(a => a.EpisodeCounts).Returns(new EpisodeCounts());
+        animeMock.SetupGet(a => a.Title).Returns("blah");
+        var titleMock = Mock.Of<ITitle>(t => t.Value == "blah");
+        animeMock.SetupGet(a => a.DefaultTitle).Returns(titleMock);
+        animeMock.SetupGet(a => a.Titles).Returns(new List<ITitle>());
+        animeMock.SetupGet(a => a.RelatedSeries).Returns(new List<IRelatedMetadata<ISeries, ISeries>>());
+        animeMock.SetupGet(a => a.ID).Returns(3);
+        animeMock.SetupGet(a => a.Studios).Returns([]);
+        animeMock.SetupGet(a => a.Tags).Returns([]);
+        animeMock.SetupGet(a => a.YearlySeasons).Returns([(2024, YearlySeason.Winter)]);
+        var shokoSeries = Mock.Of<IShokoSeries>(s =>
+            s.AnidbAnime == animeMock.Object &&
+            s.Title == "shokoseriesprefname" &&
+            s.AnidbAnimeID == 3 &&
+            s.TmdbMovies == new List<ITmdbMovie>() &&
+            s.TmdbShows == new List<ITmdbShow>() &&
+            s.Tags == new List<IShokoTagForSeries>() &&
+            s.DefaultTitle == titleMock);
+        animeMock.SetupGet(a => a.ShokoSeries).Returns([shokoSeries]);
+        args = new RelocationContext<LuaRenamerSettings>(new RelocationContext
+        {
+            AvailableFolders = args.AvailableFolders,
+            File = args.File,
+            Episodes = args.Episodes,
+            Series = [shokoSeries],
+            Groups = args.Groups,
+            MoveEnabled = true,
+            RenameEnabled = true,
+        }, args.Configuration);
+
+        var renamer = new LuaRenamer.LuaRenamer(Logmock);
+        var res = renamer.GetPath(args);
+        Assert.AreEqual("2024Winter.mp4", res.FileName);
+    }
+
+    [TestMethod]
+    public void TestTmdbShowSeasons()
+    {
+        var args = MinimalArgs("filename = tmdb.shows[1].seasons[1].year .. tmdb.shows[1].seasons[1].season");
+        var tmdbShow = new Mock<ITmdbShow>();
+        tmdbShow.SetupGet(s => s.Titles).Returns(new List<ITitle>());
+        tmdbShow.SetupGet(s => s.Studios).Returns([]);
+        tmdbShow.SetupGet(s => s.EpisodeCounts).Returns(new EpisodeCounts());
+        tmdbShow.SetupGet(s => s.YearlySeasons).Returns([(2023, YearlySeason.Spring)]);
+        var titleMock = Mock.Of<ITitle>(t => t.Value == "blah");
+        var shokoSeries = Mock.Of<IShokoSeries>(s =>
+            s.AnidbAnime == args.Series[0].AnidbAnime &&
+            s.Title == "shokoseriesprefname" &&
+            s.AnidbAnimeID == 3 &&
+            s.TmdbMovies == new List<ITmdbMovie>() &&
+            s.TmdbShows == new List<ITmdbShow> { tmdbShow.Object } &&
+            s.Tags == new List<IShokoTagForSeries>() &&
+            s.DefaultTitle == titleMock);
+        args = new RelocationContext<LuaRenamerSettings>(new RelocationContext
+        {
+            AvailableFolders = args.AvailableFolders,
+            File = args.File,
+            Episodes = args.Episodes,
+            Series = [shokoSeries],
+            Groups = args.Groups,
+            MoveEnabled = true,
+            RenameEnabled = true,
+        }, args.Configuration);
+
+        var renamer = new LuaRenamer.LuaRenamer(Logmock);
+        var res = renamer.GetPath(args);
+        Assert.AreEqual("2023Spring.mp4", res.FileName);
     }
 }
